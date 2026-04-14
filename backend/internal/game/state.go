@@ -8,13 +8,23 @@ import (
 	"github.com/the-sandwich/backend/internal/redis"
 )
 
+type PlayerState struct {
+	UserID       string
+	Hand         []Card
+	PlayedCards  []Card
+	Score        int
+	HasPlayed    bool
+	IsAutoPlayed bool
+}
+
 type GameState struct {
 	MatchID     string
-	Players     []string // User IDs
-	Round       int      // 1 to 5
-	Status      string   // "WAITING", "PLAYING", "FINISHED"
-	PublicCards []Card   // P1, P2, P3, P4
-	// In a real app we'd also store player hands, scores, turn timers, etc.
+	Players     []PlayerState
+	Round       int // 1 to 5
+	Status      string // "WAITING", "PLAYING", "ROUND_OVER", "FINISHED"
+	PublicCards []Card // length 4
+	Deck        []Card
+	TurnExpires int64 // Unix timestamp
 }
 
 func getMatchKey(matchID string) string {
@@ -27,7 +37,6 @@ func SaveGameState(state *GameState) error {
 	if err != nil {
 		return err
 	}
-
 	err = redis.Client.Set(redis.Ctx, getMatchKey(state.MatchID), data, 0).Err()
 	if err != nil {
 		return fmt.Errorf("failed to save game state: %v", err)
@@ -49,6 +58,5 @@ func LoadGameState(matchID string) (*GameState, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return &state, nil
 }
