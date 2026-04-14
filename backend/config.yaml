@@ -1,0 +1,15 @@
+database:
+  driver: "mysql"
+  dsn: "root:123456@tcp(localhost:3306)/sandwich?charset=utf8mb4&parseTime=True&loc=Local"
+
+redis:
+  addr: "localhost:6379"
+  password: ""
+  db: 0
+
+auth:
+  jwt_secret: "super_secret_key"
+
+app:
+  host: "0.0.0.0"
+  port: 8080

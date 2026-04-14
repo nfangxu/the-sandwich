@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(go install:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(go build:*)",
+      "Bash(wire version:*)",
+      "Bash(wire)",
+      "Bash(go mod:*)",
+      "Bash(wire ./cmd/server/...)",
+      "Bash(GOWORK=off go install github.com/google/wire/cmd/wire@v0.5.0)",
+      "Bash(go run:*)",
+      "Bash(GOWORK=off go install github.com/google/wire/cmd/wire@latest)",
+      "Bash(go version:*)",
+      "Bash(go test:*)",
+      "Bash(go get:*)",
+      "Bash(gofmt:*)",
+      "Bash(xxd /home/cg/Codes/the-sandwich/backend/internal/domain/game/evaluator.go)",
+      "Bash(GOPROXY=https://proxy.golang.org,direct go get:*)",
+      "Bash(GOPROXY=off go list -m all)",
+      "Bash(GOPROXY=direct go get:*)",
+      "Bash(GOPROXY=https://goproxy.cn go mod:*)",
+      "Bash(GOPROXY=direct go mod:*)",
+      "Bash(GOPROXY=https://athens.azurefd.net go mod:*)",
+      "Bash(go doc:*)",
+      "Bash(mysql -h localhost -u root -proot -e \"SELECT 1\")",
+      "Bash(mysql -h localhost -u root -p -e \"SELECT 1\")"
+    ]
+  }
+}

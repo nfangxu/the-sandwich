@@ -1,29 +1,38 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
-	"github.com/the-sandwich/backend/internal/api"
-	"github.com/the-sandwich/backend/internal/db"
-	"github.com/the-sandwich/backend/internal/models"
-	"github.com/the-sandwich/backend/internal/redis"
+	"github.com/the-sandwich/backend/internal/infrastructure"
+	"github.com/the-sandwich/backend/internal/interface/api"
+	"github.com/the-sandwich/backend/internal/interface/ws"
 )
 
 func main() {
-	// Setup Postgres
-	// In production, load from ENV.
-	dsn := "host=localhost user=postgres password=postgres dbname=sandwich port=5432 sslmode=disable"
-	if err := db.ConnectDB(dsn); err != nil {
-		log.Printf("Warning: Failed to connect to DB: %v", err)
-	} else {
-		models.MigrateUsers(db.DB)
+	cfg, err := infrastructure.LoadConfig("config.yaml")
+	if err != nil {
+		log.Fatalf("Failed to load config: %v", err)
 	}
 
-	if err := redis.ConnectRedis("localhost:6379", "", 0); err != nil {
-		log.Printf("Warning: Failed to connect to Redis: %v", err)
+	app, err := infrastructure.InitializeApp(cfg)
+	if err != nil {
+		log.Fatalf("Failed to initialize app: %v", err)
 	}
 
-	r := api.SetupRouter()
-	log.Println("Starting server on :8080")
-	r.Run(":8080")
+	hub, err := ws.NewHub()
+	if err != nil {
+		log.Fatalf("Failed to create hub: %v", err)
+	}
+	go hub.Run()
+
+	handlers := api.NewHandlers(app.AuthSvc)
+	router, server := api.SetupRouter(hub, handlers)
+
+	addr := fmt.Sprintf("%s:%d", cfg.App.Host, cfg.App.Port)
+	log.Printf("Starting server on %s", addr)
+	if err := server.ListenAndServe(); err != nil {
+		log.Fatalf("Failed to start server: %v", err)
+	}
+	_ = router
 }
