@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Game from './pages/Game';
 
 function App() {
   return (
@@ -11,7 +12,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Dashboard />} />
-          <Route path="/game" element={<div className="p-8">Game Table UI Here (WebSocket)</div>} />
+          <Route path="/game" element={<Game />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
